@@ -1,0 +1,15 @@
+src/.env
+.venv/
+
+.idea/
+
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+*.log
+
+poetry.lock
+Pipfile
+Pipfile.lock

@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS tickets (
+    ticket_id BIGSERIAL PRIMARY KEY,
+    user_id BIGINT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    bill_number TEXT UNIQUE
+);
