@@ -1,0 +1,6 @@
+telebot
+psycopg2
+python-dotenv
+openpyxl
+PyPDF2
+logging
