@@ -42,7 +42,7 @@ def get_database_connection():
         return None
 
 def execute_sql_from_file(filename):
-    file_path = os.path.join("src/database", filename)
+    file_path = os.path.join("src/database", filename) # Assuming sql files are in src/database
     try:
         with open(file_path, 'r', encoding="utf-8") as file:
             return file.read()
@@ -55,7 +55,7 @@ def create_user_table_if_not_exists():
     conn = get_database_connection()
     if conn:
         try:
-            create_table_query = execute_sql_from_file("create_table.sql")
+            create_table_query = execute_sql_from_file("create_table.sql") # Ensure this file exists in src/database
             cursor = conn.cursor()
             cursor.execute(create_table_query)
             conn.commit()
@@ -69,7 +69,7 @@ def register_new_user(user_id, surname, name, address, phone_number):
     conn = get_database_connection()
     if conn:
         try:
-            insert_query = execute_sql_from_file("insert.sql")
+            insert_query = execute_sql_from_file("insert.sql") # Ensure this file exists in src/database
             cursor = conn.cursor()
             cursor.execute(insert_query, (user_id, surname, name, address, phone_number, 0))
             conn.commit()
@@ -86,7 +86,7 @@ def is_user_registered(user_id):
     conn = get_database_connection()
     if conn:
         try:
-            select_query = execute_sql_from_file("select.sql")
+            select_query = execute_sql_from_file("select.sql") # Ensure this file exists in src/database
             cursor = conn.cursor()
             cursor.execute(select_query, (user_id,))
             user = cursor.fetchone()
@@ -186,7 +186,7 @@ def delete_user_from_db(user_id):
     conn = get_database_connection()
     if conn:
         try:
-            delete_query = execute_sql_from_file("delete_user.sql")
+            delete_query = execute_sql_from_file("delete_user.sql") # Ensure this file exists in src/database
             cursor = conn.cursor()
             cursor.execute(delete_query, (user_id,))
             conn.commit()
@@ -203,7 +203,7 @@ def admin_add_new_user_to_db(user_id, surname=None, name=None, address=None, pho
     conn = get_database_connection()
     if conn:
         try:
-            insert_query = execute_sql_from_file("admin_insert_user.sql")
+            insert_query = execute_sql_from_file("admin_insert_user.sql") # Ensure this file exists in src/database
             cursor = conn.cursor()
             cursor.execute(insert_query, (user_id, surname, name, address, phone_number, number_of_tickets))
             conn.commit()
@@ -218,12 +218,12 @@ def admin_add_new_user_to_db(user_id, surname=None, name=None, address=None, pho
 
 
 def create_main_menu():
-    menu = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    menu = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=False) # Set one_time_keyboard=False
     menu.add(KeyboardButton("🎫 Мои билеты"), KeyboardButton("🎟️ Получить билеты"), KeyboardButton("🏆 Результаты"))
     return menu
 
 def create_admin_menu():
-    menu = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    menu = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=False) # Set one_time_keyboard=False
     menu.add(KeyboardButton("🎫 Мои билеты"), KeyboardButton("🎟️ Получить билеты"), KeyboardButton("🏆 Результаты"))
     menu.add(KeyboardButton("📊 Экспорт данных"), KeyboardButton("⚙️ Управление пользователями"))
     return menu
@@ -318,7 +318,7 @@ def start_command_handler(message):
     user_id = message.from_user.id
     is_admin = str(user_id) == ADMIN_USER_ID
 
-    image_path = 'src/images/welcome_image.png'
+    image_path = 'src/images/welcome_image.png' # Assuming welcome_image.png is in src/images
     try:
         with open(image_path, 'rb') as photo:
             bot.send_photo(message.chat.id, photo)
@@ -345,7 +345,7 @@ def start_command_handler(message):
 
     bot.send_message(message.chat.id, welcome_message, parse_mode='Markdown')
 
-    send_main_menu(message.chat.id, is_admin)
+    send_main_menu(message.chat.id, is_admin) # Send menu immediately after start
 
     if not is_user_registered(user_id):
         bot.send_message(message.chat.id, "📝 Для начала регистрации, пожалуйста, введите следующие данные:")
@@ -353,7 +353,7 @@ def start_command_handler(message):
         bot.register_next_step_handler(message, ask_for_surname)
     else:
         bot.send_message(message.chat.id, "🎉 Вы уже зарегистрированы! Добро пожаловать снова! 🎉")
-        send_back_to_menu_message(message.chat.id, is_admin)
+        send_back_to_menu_message(message.chat.id, is_admin) # Send menu again for registered users
 
 
 @bot.message_handler(func=lambda message: message.text == "📊 Экспорт данных")
@@ -549,8 +549,8 @@ def export_users_command_handler(message):
         if users:
             excel_file = generate_users_excel_report(users)
             bot.send_document(message.chat.id, excel_file,
-                                    caption="📊 *Отчет по данным пользователей* 📊",
-                                    file_name="user_data.xlsx", parse_mode='Markdown')
+                                             caption="📊 *Отчет по данным пользователей* 📊",
+                                             file_name="user_data.xlsx", parse_mode='Markdown')
         else:
             bot.send_message(message.chat.id, "ℹ️ В базе данных не найдено пользователей. ℹ️")
     else:
@@ -579,7 +579,7 @@ def handle_receipt_document(message):
                 if tickets_received > 0:
                     bot.send_message(message.chat.id, f"🎉 Поздравляем! Вы получили *{tickets_received} билетов*! 🎟️ Удачи в конкурсе! 🎉", parse_mode='Markdown')
                 else:
-                    pass 
+                    pass
             else:
                 bot.send_message(message.chat.id, "❌ Не удалось извлечь данные из чека. Пожалуйста, убедитесь, что чек корректный и в формате *PDF*. ❌", parse_mode='Markdown')
 
