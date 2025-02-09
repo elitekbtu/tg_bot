@@ -54,5 +54,5 @@ logging
 ## Запуск бота
 Запустите бота командой:
 ```
-python bot.py
+python main.py
 ```
