@@ -42,7 +42,7 @@ def get_database_connection():
         return None
 
 def execute_sql_from_file(filename):
-    file_path = os.path.join("database", filename)
+    file_path = os.path.join("src", "bot", "database", filename)
     try:
         with open(file_path, 'r', encoding="utf-8") as file:
             return file.read()
@@ -318,7 +318,7 @@ def start_command_handler(message):
     user_id = message.from_user.id
     is_admin = str(user_id) == ADMIN_USER_ID
 
-    image_path = r'images\welcome_image.png'
+    image_path = os.path.join("src", "bot", "images", "welcome_image.png")
     try:
         with open(image_path, 'rb') as photo:
             bot.send_photo(message.chat.id, photo)

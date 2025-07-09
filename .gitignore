@@ -1,4 +1,3 @@
-src/.env
 .venv/
 
 .idea/
@@ -13,3 +12,4 @@ __pycache__/
 poetry.lock
 Pipfile
 Pipfile.lock
+.env
